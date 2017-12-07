@@ -217,22 +217,22 @@ class AminoEPGGrabber(object):
         If an existing database file was loaded, that data will be updated.
         """
         # Report settings to user
-        print "Grabbing EPG using the following settings:"
-        print "Server to download from: %s" % self.epgServer
-        print "Number days of to grab : %s" % self.maxDays
-        print "Detailed program info  : %s" % ("Yes" if self.details else "No")
-        print "Download channel logo  : %s" % ("Yes" if self.downloadlogo else "No")
-        print "Writing XMLTV file to  : %s" % self.xmltvFile
-        print "Using database file    : %s" % self.databaseFile
-        print "Grabbing EPG for %d channels." % len(self.channelDict)
-        print ""
+        print ("Grabbing EPG using the following settings:")
+        print ("Server to download from: %s" % self.epgServer)
+        print ("Number days of to grab : %s" % self.maxDays)
+        print ("Detailed program info  : %s" % ("Yes" if self.details else "No"))
+        print ("Download channel logo  : %s" % ("Yes" if self.downloadlogo else "No"))
+        print ("Writing XMLTV file to  : %s" % self.xmltvFile)
+        print ("Using database file    : %s" % self.databaseFile)
+        print ("Grabbing EPG for %d channels." % len(self.channelDict))
+        print ("")
         
         # Grab EPG data for all days
         for grabDay in range(self.maxDays):
             for dayPart in range(0, 8):
                 grabDate = date.today() + timedelta(days=grabDay)
-                print "Grabbing", str(grabDate), "part", dayPart,
-                print "(day " + str(grabDay+1) + "/" + str(self.maxDays) + ")"
+                print ("Grabbing", str(grabDate), "part", dayPart)
+                print ("(day " + str(grabDay+1) + "/" + str(self.maxDays) + ")")
                 
                 try:
                     # Set up new connection to EPG server
@@ -249,22 +249,22 @@ class AminoEPGGrabber(object):
                         response.close()
                         
                         if response.status != 200:
-                            print "HTTP Error %s (%s). Failed on fileid %s." % (response.status,
+                            print ("HTTP Error %s (%s). Failed on fileid %s." % (response.status,
                                                                                 response.reason,
-                                                                                fileId)
+                                                                                fileId))
                             break # break loop, no more days
                         
-                    except socket.error, error:
-                        print "Failed to download '" + fileId + "'"
-                        print "The error was:", error
+                    except (socket.error, error):
+                        print ("Failed to download '" + fileId + "'")
+                        print ("The error was:", error)
+                        return False # Return with error)
+                    except (httplib.CannotSendRequest, error):
+                        print ("Error occurred on HTTP connection. Connection lost before sending request.")
+                        print ("The error was:", error)
                         return False # Return with error
-                    except httplib.CannotSendRequest, error:
-                        print "Error occurred on HTTP connection. Connection lost before sending request."
-                        print "The error was:", error
-                        return False # Return with error
-                    except httplib.BadStatusLine, error:
-                        print "Error occurred on HTTP connection. Bad status line returned."
-                        print "The error was:", error
+                    except (httplib.BadStatusLine, error):
+                        print ("Error occurred on HTTP connection. Bad status line returned.")
+                        print ("The error was:", error)
                         return False # Return with error
                     
                     # Decompress and retrieve data
@@ -620,7 +620,7 @@ def main():
     Main entry point of program.
     This function will read the configuration file and start the grabber.
     """
-    print "AminoEPGGrabber %s started on %s." % (VERSION, datetime.now())
+    print ("AminoEPGGrabber %s started on %s." % (VERSION, datetime.now()))
     
     # Create grabber class
     grabber = AminoEPGGrabber()
@@ -642,7 +642,7 @@ def main():
     # Write XMLTV file
     grabber.writeXmltv()
     
-    print "AminoEPGGrabber finished on %s." % datetime.now()
+    print ("AminoEPGGrabber finished on %s." % datetime.now())
 
 if __name__ == "__main__":
     main()
